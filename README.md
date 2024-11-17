@@ -51,34 +51,204 @@
     ```
 
 - **Refrescar token JWT**: `POST /api/token/refresh/`
-
+    ```json
+    {
+        "refresh": "your_refresh_token"
+    }
+    ```
+    
 ### Usuarios
 
 - **Crear usuario**: `POST /api/users/`
+    ```json
+    {
+        "username": "newuser",
+        "email": "newuser@example.com",
+        "name": "New User",
+        "password": "password",
+        "role": "player"
+    }
 - **Listar usuarios**: `GET /api/users/`
+    ```json
+    [
+        {
+            "id": "uuid",
+            "username": "admin",
+            "email": "admin@example.com",
+            "name": "Admin User"
+        },
+        {
+            "id": "uuid",
+            "username": "newuser",
+            "email": "newuser@example.com",
+            "name": "New User"
+        }
+    ]
+    ```
 
 ### Preguntas
 
 - **Crear pregunta**: `POST /api/questions/`
+    ```json
+    {
+        "question_text": "What is the capital of France?",
+        "difficulty": "easy",
+        "options": [
+            {"option_text": "Paris", "is_correct": true},
+            {"option_text": "London", "is_correct": false},
+            {"option_text": "Berlin", "is_correct": false},
+            {"option_text": "Madrid", "is_correct": false}
+        ]
+    }
+    ```
+
 - **Listar preguntas**: `GET /api/questions/`
+    ```json
+    [
+        {
+            "id": 1,
+            "question_text": "What is the capital of France?",
+            "options": [
+                {"id": 1, "option_text": "Paris", "is_correct": true},
+                {"id": 2, "option_text": "London", "is_correct": false},
+                {"id": 3, "option_text": "Berlin", "is_correct": false},
+                {"id": 4, "option_text": "Madrid", "is_correct": false}
+            ]
+        }
+    ]
+    ```
 
 ### Trivias
 
 - **Crear trivia**: `POST /api/trivias/`
+    ```json
+    {
+        "name": "Trivia 1",
+        "description": "Description for Trivia 1",
+        "questions": [
+            {"id": 1},
+            {"id": 2},
+            {"id": 3}
+        ]
+    }
+    ```
+
 - **Listar trivias**: `GET /api/trivias/`
+    ```json
+    [
+        {
+            "id": 1,
+            "name": "Trivia 1",
+            "description": "Description for Trivia 1",
+            "questions": [
+                {"id": 1, "question_text": "What is the capital of France?", "options": [...]},
+                {"id": 2, "question_text": "What is 2 + 2?", "options": [...]},
+                {"id": 3, "question_text": "What is the color of the sky?", "options": [...]}
+            ]
+        }
+    ]
+    ```
 
 ### Participación en Trivias
 
 - **Ver trivias asignadas**: `GET /api/participations/`
+    ```json
+    [
+        {
+            "id": 1,
+            "user": "uuid",
+            "trivia": "uuid",
+            "trivia_name": "Trivia 1",
+            "score": 10,
+            "completed": false
+        }
+    ]
+    ```
+
 - **Responder preguntas**: `POST /api/answers/`
+    ```json
+    {
+        "question": 1,
+        "selected_option": 1
+    }
+    ```
+
 - **Ver puntaje y estado de participación**: `GET /api/participations/<int:pk>/`
+    ```json
+    {
+        "id": 1,
+        "user": "uuid",
+        "trivia": "uuid",
+        "trivia_name": "Trivia 1",
+        "score": 10,
+        "completed": false
+    }
+    ```
 
 ### Ranking de Usuarios
 
 - **Generar ranking**: `GET /api/rankings/`
+    ```json
+    [
+        {
+            "user": "admin",
+            "total_score": 30,
+            "trivias": [
+                {"trivia_name": "Trivia 1", "score": 10},
+                {"trivia_name": "Trivia 2", "score": 20}
+            ]
+        },
+        {
+            "user": "newuser",
+            "total_score": 20,
+            "trivias": [
+                {"trivia_name": "Trivia 1", "score": 20}
+            ]
+        }
+    ]
+    ```
+
 - **Generar ranking por trivia**: `GET /api/rankings/<int:trivia_id>/`
+    ```json
+    [
+        {
+            "user": "admin",
+            "total_score": 10,
+            "trivias": [
+                {"trivia_name": "Trivia 1", "score": 10}
+            ]
+        },
+        {
+            "user": "newuser",
+            "total_score": 20,
+            "trivias": [
+                {"trivia_name": "Trivia 1", "score": 20}
+            ]
+        }
+    ]
+    ```
+
 - **Generar ranking por trivia y usuario**: `GET /api/rankings/<int:trivia_id>/<uuid:user_id>/`
+    ```json
+    {
+        "user": "newuser",
+        "total_score": 20,
+        "trivias": [
+            {"trivia_name": "Trivia 1", "score": 20}
+        ]
+    }
+    ```
+
 - **Generar ranking por usuario**: `GET /api/rankings/user/<uuid:user_id>/`
+    ```json
+    {
+        "user": "newuser",
+        "total_score": 20,
+        "trivias": [
+            {"trivia_name": "Trivia 1", "score": 20}
+        ]
+    }
+    ```
 
 ## TO DO 📝
 
