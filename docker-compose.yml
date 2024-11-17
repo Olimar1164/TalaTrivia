@@ -1,5 +1,4 @@
 version: '3.8'
-
 services:
   web:
     build: .
@@ -10,7 +9,6 @@ services:
       - "8000:8000"
     depends_on:
       - db
-
   db:
     image: postgres:13
     environment:
@@ -19,6 +17,5 @@ services:
       POSTGRES_PASSWORD: postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data/
-
 volumes:
   postgres_data:

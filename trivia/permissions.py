@@ -1,14 +1,13 @@
 from rest_framework.permissions import BasePermission
-from trivia.models import User  # Importar nuestro modelo User personalizado
 
 class IsAdminUser(BasePermission):
     def has_permission(self, request, view):
-        # Verificar si el usuario está autenticado y tiene el rol correcto
-        try:
-            return bool(request.user and request.user.role == 'admin')
-        except AttributeError:
+        if not request.user or not hasattr(request.user, 'role'):
+            print('User is not authenticated or does not have a role attribute')
             return False
-
+        is_admin = request.user.role == 'admin'
+        print(f"User: {request.user.username}, Role: {request.user.role}, Is Admin: {is_admin}")
+        return is_admin
 class IsPlayerUser(BasePermission):
     def has_permission(self, request, view):
         try:

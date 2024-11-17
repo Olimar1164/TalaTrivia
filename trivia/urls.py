@@ -1,11 +1,9 @@
 from django.urls import path
-from trivia.views import MyTokenObtainPairView, MyTokenRefreshView, ParticipationDetailAPIView, ParticipationListCreateAPIView, PlayerDetailAPIView, PlayerListCreateAPIView, QuestionDetailAPIView, QuestionListCreateAPIView, TriviaDetailAPIView, RankingView, TriviaListCreateAPIView, UserAnswerCreateAPIView, UserDetailAPIView, UserListCreateAPIView
+from trivia.views import ParticipationDetailAPIView, ParticipationListCreateAPIView, PlayerDetailAPIView, PlayerListCreateAPIView, QuestionDetailAPIView, QuestionListCreateAPIView, TriviaDetailAPIView, RankingView, TriviaListCreateAPIView, UserAnswerCreateAPIView, UserDetailAPIView, UserListCreateAPIView
 
 urlpatterns = [
     path('users/', UserListCreateAPIView.as_view(), name='user-list-create'),
     path('users/<uuid:pk>/', UserDetailAPIView.as_view(), name='user-detail'),
-    path('token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('token/refresh/', MyTokenRefreshView.as_view(), name='token_refresh'),
     path('players/', PlayerListCreateAPIView.as_view(), name='player-list-create'),
     path('players/<uuid:pk>/', PlayerDetailAPIView.as_view(), name='player-detail'),
     path('questions/', QuestionListCreateAPIView.as_view(), name='question_list'),

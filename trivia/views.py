@@ -5,25 +5,17 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from rest_framework.views import APIView, Response
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from trivia.models import Player, User, Question, Trivia, Participation, UserAnswer
 from trivia.permissions import IsAdminUser, IsPlayerUser
-from trivia.serializers import ParticipationSerializer, PlayerCreateSerializer, PlayerListSerializer, QuestionCreateSerializer, QuestionListSerializer, TriviaCreateSerializer, TriviaListSerializer, UserAnswerSerializer, UserCreateSerializer, UserListSerializer
-
-class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
-    @classmethod
-    def get_token(cls, user):
-        token = super().get_token(user)
-        token['username'] = user.username
-        return token
+from trivia.serializers import CustomTokenObtainPairSerializer, ParticipationSerializer, PlayerCreateSerializer, PlayerListSerializer, QuestionCreateSerializer, QuestionListSerializer, TriviaCreateSerializer, TriviaListSerializer, UserAnswerSerializer, UserCreateSerializer, UserListSerializer
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
 class MyTokenRefreshView(TokenRefreshView):
     pass
-
 
 class PlayerListCreateAPIView(APIView):
     queryset = Player.objects.all()
@@ -64,17 +56,18 @@ class PlayerDetailAPIView(APIView):
     
 class UserListCreateAPIView(APIView):
     queryset = User.objects.all()
-   
+    permission_classes = [IsAdminUser]
+
     def get_serializer_class(self):
         if self.request.method == 'POST':
             return UserCreateSerializer
         return UserListSerializer
-    
+
     def get(self, request):
         users = self.queryset.all()
         serializer = self.get_serializer_class()(users, many=True)
         return Response(serializer.data)
-    
+
     def post(self, request):
         serializer = self.get_serializer_class()(data=request.data)
         if serializer.is_valid():
@@ -84,6 +77,7 @@ class UserListCreateAPIView(APIView):
 
 class UserDetailAPIView(APIView):
     queryset = User.objects.all()
+    permission_classes = [IsAdminUser]
     serializer_class = UserCreateSerializer
     
     def get(self, request, pk):

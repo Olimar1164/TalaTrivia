@@ -1,10 +1,19 @@
 from rest_framework import serializers
 from trivia.models import AnswerOption, Participation, Player, Question, Trivia, User, Entity, UserAnswer
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        token['username'] = user.username
+        token['role'] = user.role
+        return token
+    
 class UserCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'name', 'password']
+        fields = ['id', 'username', 'email', 'name', 'password', 'role']
         extra_kwargs = {
             'password': {'write_only': True}
         }
@@ -83,7 +92,7 @@ class QuestionListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Question
-        fields = ['id', 'question_text', 'difficulty', 'options']
+        fields = ['id', 'question_text', 'options']
 
 class UserAnswerSerializer(serializers.ModelSerializer):
     class Meta:
