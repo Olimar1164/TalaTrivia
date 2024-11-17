@@ -10,15 +10,9 @@ class CustomUserManager(BaseUserManager):
             raise ValueError('El email es obligatorio')
         
         email = self.normalize_email(email)
-        user = self.model(username=username, email=email, **extra_fields)
+        user = self.model(username=username, email=email, role=role, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
-        
-        # Crear entidad y jugador solo si no existen
-        if not Entity.objects.filter(user=user).exists():
-            entity = Entity.objects.create(user=user, name=user.name, email=user.email)
-            Player.objects.create(entity=entity, role=role)
-        
         return user
 
     def create_superuser(self, username, email, password=None, **extra_fields):
@@ -37,6 +31,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=12, unique=True)
     email = models.EmailField(unique=True)
     name = models.CharField(max_length=100)
+    role = models.CharField(max_length=10, default='player')
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
@@ -48,7 +43,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.username
-
     def has_perm(self, perm, obj=None):
         return True
 

@@ -1,4 +1,3 @@
-# trivia/management/commands/generate_test_data.py
 from django.core.management.base import BaseCommand
 from trivia.models import User, Entity, Player, Question, AnswerOption, Trivia, Participation, UserAnswer
 import random
@@ -14,6 +13,16 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS('Successfully generated test data'))
 
     def create_users(self):
+        # Crear usuario administrador
+        if not User.objects.filter(email='admin@example.com').exists():
+            User.objects.create_superuser(
+                username='admin',
+                email='admin@example.com',
+                password='adminpassword',
+                name='Admin User'
+            )
+
+        # Crear usuarios de prueba
         for i in range(10):
             username = f'user{i}'
             email = f'user{i}@example.com'
@@ -51,7 +60,6 @@ class Command(BaseCommand):
             )
             questions = Question.objects.all().order_by('?')[:10]
             trivia.questions.set(questions)
-
 
     def create_participations(self):
         users = User.objects.all()
