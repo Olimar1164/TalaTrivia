@@ -1,6 +1,6 @@
 # TalaTrivia 🎉
 
-¡Bienvenid@ a TalaTrivia! Este proyecto es parte de un desafío para TALANA, consta en construir una API que gestione un juego de trivia. Los usuarios pueden participar en trivias, responder preguntas y competir por obtener el mayor puntaje posible.
+¡Bienvenid@ a TalaTrivia! Este proyecto es parte de un desafío para TALANA, consta de la construcción de una API que gestione un juego de trivia. Los usuarios pueden participar en trivias, responder preguntas y competir por obtener el mayor puntaje posible.
 
 ## Características 🚀
 
@@ -96,4 +96,4 @@
 
 ---
 
-¡Gracias por visitar ver mi proyecto! 🎉
+¡Gracias por ver mi proyecto! 🎉
