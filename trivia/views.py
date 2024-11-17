@@ -95,6 +95,7 @@ class UserDetailAPIView(APIView):
 
 class TriviaListCreateAPIView(APIView):
     queryset = Trivia.objects.all()
+    permission_classes = [IsAdminUser]
 
     def get_serializer_class(self):
         if self.request.method == 'POST':
@@ -115,6 +116,7 @@ class TriviaListCreateAPIView(APIView):
 
 class TriviaDetailAPIView(APIView):
     queryset = Trivia.objects.all()
+    permission_classes = [IsAdminUser]
     serializer_class = TriviaCreateSerializer
     
     def get(self, request, pk):
@@ -171,6 +173,7 @@ class ParticipationView(View):
     
 
 class RankingView(APIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = ParticipationSerializer
 
     def get_queryset(self):
@@ -212,9 +215,9 @@ class RankingView(APIView):
         return Response(ranking)
     
 
-
 class QuestionListCreateAPIView(APIView):
     queryset = Question.objects.all()
+    permission_classes = [IsAdminUser]
 
     def get_serializer_class(self):
         if self.request.method == 'POST':
@@ -233,8 +236,10 @@ class QuestionListCreateAPIView(APIView):
             return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)
 
+
 class QuestionDetailAPIView(APIView):
     queryset = Question.objects.all()
+    permission_classes = [IsAdminUser]
     serializer_class = QuestionCreateSerializer
     
     def get(self, request, pk):
@@ -250,9 +255,11 @@ class QuestionDetailAPIView(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=400)
 
+
 class UserAnswerCreateAPIView(APIView):
     queryset = UserAnswer.objects.all()
     serializer_class = UserAnswerSerializer
+    permission_classes = [IsPlayerUser]
     
     def perform_create(self, serializer):
         user = self.request.user
@@ -282,21 +289,22 @@ class UserAnswerCreateAPIView(APIView):
         user_answers = self.queryset.all()
         serializer = self.serializer_class(user_answers, many=True)
         return Response(serializer.data)
-    
+
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            self.perform_create(serializer)
             return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)
     
 
 class ParticipationListCreateAPIView(APIView):
     queryset = Participation.objects.all()
+    permission_classes = [IsPlayerUser]
     serializer_class = ParticipationSerializer
-    
+
     def get(self, request):
-        participations = self.queryset.all()
+        participations = self.queryset.filter(user=request.user)
         serializer = self.serializer_class(participations, many=True)
         return Response(serializer.data)
     
@@ -309,21 +317,21 @@ class ParticipationListCreateAPIView(APIView):
 
 class ParticipationDetailAPIView(APIView):
     queryset = Participation.objects.all()
+    permission_classes = [IsPlayerUser]
     serializer_class = ParticipationSerializer
-    
+
     def get(self, request, pk):
-        participation = self.queryset.get(pk=pk)
+        participation = self.queryset.get(pk=pk, user=request.user)
         serializer = self.serializer_class(participation)
         return Response(serializer.data)
-    
+
     def put(self, request, pk):
-        participation = self.queryset.get(pk=pk)
+        participation = self.queryset.get(pk=pk, user=request.user)
         serializer = self.serializer_class(participation, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=400)
-    
 
 
     
